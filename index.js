@@ -1,5 +1,6 @@
 require("dotenv").config();
-const { Client, GuildMember, Intents, DiscordAPIError } = require("discord.js")
+const { Client, Collection, Intents} = require("discord.js");
+const { readdirSync } = require("fs")
     config = require("./config")
     client = new Client({
         intents:[
@@ -12,9 +13,10 @@ const { Client, GuildMember, Intents, DiscordAPIError } = require("discord.js")
             Intents.FLAGS.DIRECT_MESSAGES
         ]
     });
-client.on("ready",() => {
-    console.log(`Logged in as ${client.user.tag}!`);
-})
+    client.commands = new Collection();
+
+client
     .on("error", console.error)
     .on("warn", console.warn)
-client.login(process.env.TOKEN)
+    .on("debug",console.log)
+    .login(process.env.TOKEN);
