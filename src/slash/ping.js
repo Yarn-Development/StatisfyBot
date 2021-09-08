@@ -1,9 +1,7 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require("discord.js")
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('ping')
-		.setDescription('Fetch latency information of the bot'),
+  name: 'ping',
+  description:'Fetch the bot\'s current latency',
 	async execute(interaction) {
       await interaction.deferReply();
         const reply = interaction.editReply('Pinging...');

@@ -1,35 +1,31 @@
-const fetch = require("node-fetch")
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const statisfy = require("statisfy");
 const { MessageEmbed } = require("discord.js");
 
 module.exports = {
-data: new SlashCommandBuilder()
-.setName("npm")
-.setDescription("Get extra info on an npm package!")
-.addStringOption(option =>
-option.setName('package')
-.setDescription('NPM package to get info from')
-.setRequired(true)),
-async execute(interaction) {
-
-await interaction.deferReply();
+name:"npm",
+description:'Get Information on an npm package!',
+options:[ 
+  {
+    name:'package',
+    type:'STRING',
+    required:true,
+    description:'NPM Package that you would like information on.'
+  }
+],
+async execute(client,interaction) {
 const npm = await interaction.options.getString("package")
+try {
   if (!npm) {
     return interaction.followUp({content:
         '**:point_right: Please make sure to mention a npm.**', ephemeral :true}
     );
-  }
-  let response;
-  try {
-    response = await fetch('https://api.npms.io/v2/search?q=' + npm).then(
-        (res) => res.json(),
-    );
+ }
   } catch (err) {
     return interaction.followUp({content:'**:no_entry_sign: I think an error occured...**',ephemeral :true});
     console.log(err)
   }
   try {
-    const pkg = response.results[0].package;
+    const pkg = await statisfy.npm(npm)
     const npmbed = new MessageEmbed()
         .setTitle(pkg.name)
         .setColor('#ED5E5E')
@@ -55,7 +51,7 @@ const npm = await interaction.options.getString("package")
     interaction.followUp({embeds: [npmbed]});
   } catch (err) {
     console.warn(err);
-    interaction.followUp({content:'**I could not find your package in npm...jc95pU2eXLKGwWdh** ', ephemeral :true});
+    interaction.followUp({content:'**I could not find your package in npm...** ', ephemeral :true});
   }
 
 },
